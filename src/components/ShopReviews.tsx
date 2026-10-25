@@ -10,19 +10,19 @@ const reviewSamples = [
     name: "Marco R.",
     region: "Lombardia",
     title: "Finalmente tutto in un posto",
-    quote: "Mi piacerebbe avere tutta questa raccolta sul tablet. La presentazione è chiara e trovare le copertine sembra davvero semplice.",
+    quote: "Cercavo da tempo un modo pratico per sfogliare queste riviste senza occupare spazio in casa. La cosa che apprezzo di più è poter leggere con calma dal tablet.",
   },
   {
     name: "Giulia M.",
     region: "Toscana",
     title: "Bella idea per chi ama le riviste",
-    quote: "Sfogliare i vecchi numeri in digitale è proprio il tipo di esperienza che cercherei. Utile poter tornare alle pagine preferite con calma.",
+    quote: "Sono appassionata di riviste d’epoca e mi piace ritrovare le vecchie copertine. Sul telefono è comodo fermarmi su una pagina e tornarci più tardi.",
   },
   {
     name: "Lorenzo F.",
     region: "Lazio",
     title: "Comodo da consultare",
-    quote: "Mi colpisce soprattutto la possibilità di leggere da computer o telefono, senza dover fare spazio a casa per tutte le riviste.",
+    quote: "Mi ha convinto soprattutto il formato digitale. Preferisco avere i numeri sul computer e poter passare da una rivista all’altra senza cercarle in giro.",
   },
 ];
 
