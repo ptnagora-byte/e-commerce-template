@@ -205,3 +205,46 @@
 .shop .home-preview-tile img{height:165px}
 .shop .home-visual-price{bottom:15px;right:15px}
 }
+
+/* Customer review display and email-based submission — 2026-10 */
+.shop .shop-reviews .shop-reviews-heading{max-width:850px}
+.shop .review-demo-card{display:flex;flex-direction:column;min-height:275px;box-shadow:0 8px 28px rgba(22,19,16,.035)}
+.shop .review-demo-label{white-space:nowrap;font-size:8px!important;color:#a06141!important;letter-spacing:.35px!important}
+.shop .review-demo-quote{flex:1;color:#504e49!important;line-height:1.75!important}
+.shop .review-author{border-top:1px solid #ece8e2;padding-top:16px;margin-top:14px;display:flex;align-items:center;gap:11px}
+.shop .review-avatar{height:40px;width:40px;border-radius:50%;display:grid;place-items:center;background:#f6e6e8;color:var(--red);font-weight:900}
+.shop .review-author strong{font-size:12px;display:block}
+.shop .review-author div span{color:#888;display:flex;align-items:center;gap:3px;font-size:11px;margin-top:2px}
+.shop .review-demo-foot{font-size:10px;margin-top:15px;color:#8f8a86}
+.shop .review-submit-area{display:grid;grid-template-columns:.82fr 1.18fr;gap:55px;padding:48px 0 12px;margin-top:58px;border-top:1px solid #e8e2da}
+.shop .review-submit-intro h2{font-size:clamp(28px,3vw,40px);line-height:1.2;margin:12px 0 20px}
+.shop .review-submit-intro>p{color:#68635e;font-size:14px;line-height:1.85}
+.shop .review-submit-promise{display:flex;align-items:flex-start;gap:10px;background:#f7f3ef;padding:16px;border-radius:9px;color:#555;font-size:12px;line-height:1.7;margin:24px 0}
+.shop .review-submit-promise svg{color:var(--red);flex-shrink:0}
+.shop .review-submit-disclosure{font-size:11px!important;color:#999!important}
+.shop .shop-review-form{background:#fff;border:1px solid #e8e2da;border-radius:15px;padding:28px;box-shadow:0 10px 35px #00000008;display:grid;gap:16px}
+.shop .shop-review-form h3{margin:0;font-size:24px}
+.shop .shop-review-form>p{margin:-8px 0 1px;color:#777;font-size:12px}
+.shop .shop-review-form label{font-size:12px;font-weight:800;color:#383733;display:flex;flex-direction:column;gap:8px}
+.shop .shop-review-form input:not([type=checkbox]),.shop .shop-review-form select,.shop .shop-review-form textarea{width:100%;min-width:0;appearance:none;border:1px solid #dcd8d2;background:#fff;border-radius:8px;padding:12px 13px;color:#222;font-size:13px;font-weight:400;line-height:1.6}
+.shop .shop-review-form select{appearance:auto}
+.shop .shop-review-form textarea{resize:vertical}
+.shop .shop-review-form input:focus,.shop .shop-review-form select:focus,.shop .shop-review-form textarea:focus{border-color:var(--red);outline:2px solid #b91e3320}
+.shop .review-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.shop .review-rating-field{border:0;margin:0;padding:0}
+.shop .review-rating-field legend{font-size:12px;font-weight:800;padding:0 0 8px}
+.shop .review-rating-select{display:flex;gap:4px;align-items:center}
+.shop .review-rating-select button{background:transparent;border:0;display:grid;place-items:center;color:#c9c4bc;padding:2px}
+.shop .review-rating-select button.active{color:#f5b521}
+.shop .review-rating-select button:hover{color:#e9a411}
+.shop .review-rating-select>span{color:#777;font-size:12px;margin-left:9px}
+.shop .shop-review-form .review-check{display:flex;align-items:flex-start;gap:9px;flex-direction:row;font-size:11px;color:#777;font-weight:500;line-height:1.6}
+.shop .review-check input{accent-color:var(--red);margin:3px 0 0;flex-shrink:0}
+.shop .review-form-buttons{display:flex;gap:10px;flex-wrap:wrap}
+.shop .review-form-buttons .btn{font-size:12px;white-space:normal;flex:1;min-width:195px;line-height:1.4}
+.shop .review-form-buttons .btn:disabled{opacity:.5;cursor:not-allowed}
+.shop .shop-review-form>small{font-size:10px;color:#8d8781;line-height:1.7}
+.shop .review-form-feedback{background:#fff8e8;color:#72532a!important;border:1px solid #f4dfb2;padding:12px;border-radius:7px;font-size:11px!important;line-height:1.6}
+@media(max-width:980px){.shop .review-submit-area{grid-template-columns:1fr;gap:20px}}
+@media(max-width:760px){.shop .review-submit-area{padding-top:36px;margin-top:39px}.shop .review-form-grid{grid-template-columns:1fr}.shop .shop-review-form{padding:18px;gap:14px}.shop .review-demo-grid{gap:12px}.shop .review-form-buttons{flex-direction:column}.shop .review-form-buttons .btn{width:100%;min-width:0;flex:auto}.shop .review-demo-card{min-height:0}}
+@media(max-width:420px){.shop .review-demo-top{align-items:flex-start;gap:11px;flex-direction:column}.shop .review-submit-intro h2{font-size:28px}}
