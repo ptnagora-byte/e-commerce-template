@@ -1,7 +1,7 @@
 
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, BookOpen, Check, ChevronLeft, ChevronRight, Download, LockKeyhole, Menu, MonitorSmartphone, Search, ShieldCheck, ShoppingBag, X } from "lucide-react";
+import { ArrowRight, BookOpen, Check, ChevronLeft, ChevronRight, Download, LockKeyhole, Menu, MonitorSmartphone, Search, ShieldCheck, ShoppingBag, Star, X } from "lucide-react";
 import "../styles/storefront.css";
 
 const checkout = "https://pay.cakto.com.br/33yrtif_1239499";
@@ -20,6 +20,7 @@ const covers = [
   "https://i.ibb.co/4gS3SmLZ/play9.webp",
   "https://i.ibb.co/BVN7ncD5/outubro27.webp",
 ];
+const productImages = [mockup, ...covers.slice(0, 3)];
 const faq = [
   ["Che cosa include la collezione Playboy?", "Ricevi una raccolta digitale di oltre 500 numeri in formato PDF, da leggere su smartphone, tablet o computer."],
   ["Posso leggerla su smartphone e tablet?", "Sì. I file PDF sono compatibili con i comuni lettori PDF per Android, iPhone, iPad e computer."],
@@ -57,6 +58,7 @@ function Buy({ children, className = "" }: { children: React.ReactNode; classNam
 }
 function Storefront() {
   const [cart, setCart] = useState(false);
+  const [selectedHero, setSelectedHero] = useState(0);
   const [hasItem, setHasItem] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -84,7 +86,7 @@ function Storefront() {
       <div className="wrap nav">
         <button type="button" className="icononly menu" aria-label="Apri menu" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><Menu size={22}/></button>
         <a href="#top" className="brand" aria-label="Archivio Riviste, vai all'inizio">
-          <span className="logo">A<b>.</b></span><span className="brandtxt">ARCHIVIO<small>RIVISTE</small></span>
+          <span className="logo product-brand-logo"><ShoppingBag size={19}/></span><span className="brandtxt">ARCHIVIO<small>RIVISTE · SHOP</small></span>
         </a>
         <nav aria-label="Navigazione" className={`navlinks ${menuOpen ? "open" : ""}`}>
           <a href="#collezione" onClick={() => setMenuOpen(false)}>La collezione</a>
@@ -100,26 +102,47 @@ function Storefront() {
       {searchOpen && <form className="wrap searchbox" onSubmit={(e) => {e.preventDefault();goToAnchor("anteprime");}}><Search size={18}/><input autoFocus value={query} onChange={e => setQuery(e.target.value)} placeholder="Cerca copertine, collezione..." aria-label="Cerca"/><button type="submit">Cerca</button></form>}
     </header>
     <main>
-      <section className="wrap hero anchor" id="collezione">
-        <div>
-          <span className="eyebrow">● &nbsp; LA COLLEZIONE COMPLETA &nbsp; / &nbsp; FORMATO DIGITALE</span>
-          <h1>Un'icona editoriale.<br/><em>Tutta da riscoprire.</em></h1>
-          <p className="intro">Il mondo di Playboy in una collezione digitale: interviste, cultura, costume e il design di una rivista che ha segnato intere generazioni.</p>
-          <div className="ticks"><span><Check size={15}/> Oltre 500 numeri</span><span><Check size={15}/> PDF alta risoluzione</span><span><Check size={15}/> Accesso senza scadenza</span></div>
-          <div className="buyrow">
-            <div className="price"><small>PREZZO DELLA COLLEZIONE</small><strong>27 <i>€</i></strong><p>Pagamento una tantum · Nessun abbonamento</p></div>
-            <div className="buybuttons"><Buy>Acquista ora</Buy><button type="button" className="btn" onClick={addCart}>Metti nel carrello <ShoppingBag size={15}/></button></div>
+      <section className="wrap hero product-hero anchor" id="collezione">
+        <nav className="product-breadcrumb" aria-label="Percorso di navigazione">
+          <a href="#top">Archivio Riviste</a><ChevronRight size={14}/><span>Collezioni digitali</span><ChevronRight size={14}/><strong>Playboy 500+ PDF</strong>
+        </nav>
+        <div className="product-gallery" aria-label="Immagini del prodotto">
+          <div className="product-gallery-stage">
+            <span className="product-gallery-label">COLLEZIONE DIGITALE</span>
+            <img src={productImages[selectedHero]} alt={selectedHero === 0 ? "Collezione digitale Playboy su più dispositivi" : "Anteprima di copertina inclusa nella collezione"} fetchPriority={selectedHero === 0 ? "high" : "auto"}/>
           </div>
-          <div className="microproof">Una rivista che ha attraversato le generazioni.</div>
-        </div>
-        <div>
-          <div className="heroart">
-            <div className="artlabel">EDIZIONE DIGITALE<strong>500+ numeri in PDF</strong></div>
-            <img className="mockup" src={mockup} alt="Collezione digitale mostrata su computer, tablet e smartphone" fetchPriority="high"/>
-            <div className="floating"><Download size={23}/><div><strong>La tua collezione, ovunque</strong><span>Scarica e leggi quando vuoi</span></div></div>
+          <div className="product-thumbnails">
+            {productImages.map((src,i) => <button key={src} type="button" className={`product-thumbnail ${selectedHero === i ? "is-selected" : ""}`} aria-label={`Visualizza immagine ${i + 1} della collezione`} aria-pressed={selectedHero === i} onClick={()=>setSelectedHero(i)}><img src={src} alt="" loading={i === 0 ? "eager" : "lazy"}/></button>)}
           </div>
-          <div className="artfoot" style={{marginTop:13}}><span>ARCHIVIO DIGITALE</span><span>UN'EPOCA. INFINITE STORIE.</span></div>
+          <span className="gallery-undertext">Foto e copertine illustrative della collezione.</span>
         </div>
+        <div className="product-overview">
+          <span className="product-collection">ARCHIVIO RIVISTE <span>·</span> 500+ NUMERI IN PDF</span>
+          <h1>Collezione Digitale Playboy – oltre 500 numeri in PDF</h1>
+          <div className="product-rating-line">
+            <span className="unrated-stars" aria-label="Recensioni non ancora verificate">{Array.from({length:5}, (_,i) => <Star key={i} size={19} strokeWidth={1.8}/>)}</span>
+            <span>Valutazioni da verificare</span>
+          </div>
+          <p className="product-long-description">Il mondo di Playboy in una collezione digitale: interviste, cultura, costume e il design di una rivista che ha segnato intere generazioni.</p>
+          <div className="product-spec-list">
+            <span><Check size={17}/> Oltre 500 numeri in formato PDF</span>
+            <span><Check size={17}/> Su smartphone, tablet e computer</span>
+            <span><Check size={17}/> Download e lettura offline</span>
+            <span><Check size={17}/> Un unico pagamento, senza abbonamento</span>
+          </div>
+          <div className="product-tech"><div><strong>Formato</strong><span>Digitale (PDF)</span></div><div><strong>Accesso</strong><span>Dopo il pagamento</span></div><div><strong>Età</strong><span>Riservato ai maggiorenni (18+)</span></div></div>
+          <a className="product-preview-link" href="#anteprime">Visualizza le copertine <ArrowRight size={17}/></a>
+        </div>
+        <aside className="product-purchase-panel" aria-label="Acquisto della collezione digitale">
+          <span className="purchase-panel-eyebrow">PRODOTTO DIGITALE</span>
+          <div className="purchase-panel-price">27 <small>€</small></div>
+          <p className="purchase-panel-info">Prezzo unico · Nessun abbonamento</p>
+          <div className="purchase-panel-divider"></div>
+          <div className="purchase-panel-benefit"><Download size={20}/><div><strong>Download digitale</strong><span>Istruzioni di accesso dopo il pagamento</span></div></div>
+          <div className="purchase-panel-benefit"><ShieldCheck size={20}/><div><strong>Garanzia 7 giorni</strong><span>Secondo le condizioni applicabili</span></div></div>
+          <div className="purchase-panel-actions"><Buy>Acquista ora</Buy><button type="button" className="btn purchase-add-cart" onClick={addCart}><ShoppingBag size={17}/> Aggiungi al carrello</button></div>
+          <div className="purchase-panel-safe"><LockKeyhole size={14}/> Reindirizzamento al checkout sicuro</div>
+        </aside>
       </section>
       <div className="truststrip"><div className="wrap trustinner">
         {[[BookOpen,"Oltre 500 numeri","In un'unica raccolta"],[MonitorSmartphone,"Su tutti i dispositivi","Smartphone, tablet e PC"],[Download,"Download in PDF","Leggi anche offline"],[ShieldCheck,"Garanzia 7 giorni","Soddisfatti o rimborsati"]].map(([Icon,label,note]) => {const P = Icon as typeof BookOpen;return <div className="trustitem" key={label as string}><P size={25}/><div><strong>{label as string}</strong><span>{note as string}</span></div></div>})}
