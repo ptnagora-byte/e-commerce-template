@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Mail, MapPin, Send, Star } from "lucide-react";
+import { CheckCircle2, Mail, MapPin, Send, Star } from "lucide-react";
 import {
   trackReviewSectionView,
   trackReviewFormStart,
@@ -9,28 +9,18 @@ import {
 
 const REVIEW_INBOX = "ptnagora@gmail.com";
 
-// Esempi di impaginazione: nomi, località, valutazioni e testi sono fittizi.
-// Non pubblicare mai gli esempi come testimonianze di acquirenti verificati.
-const reviewSamples = [
-  {
-    name: "Marco R.",
-    region: "Lombardia",
-    title: "Finalmente tutto in un posto",
-    quote: "Cercavo da tempo un modo pratico per sfogliare queste riviste senza occupare spazio in casa. La cosa che apprezzo di più è poter leggere con calma dal tablet.",
-  },
-  {
-    name: "Giulia M.",
-    region: "Toscana",
-    title: "Bella idea per chi ama le riviste",
-    quote: "Sono appassionata di riviste d’epoca e mi piace ritrovare le vecchie copertine. Sul telefono è comodo fermarmi su una pagina e tornarci più tardi.",
-  },
-  {
-    name: "Lorenzo F.",
-    region: "Lazio",
-    title: "Comodo da consultare",
-    quote: "Mi ha convinto soprattutto il formato digitale. Preferisco avere i numeri sul computer e poter passare da una rivista all’altra senza cercarle in giro.",
-  },
-];
+type VerifiedReview = {
+  name: string;
+  region: string;
+  title: string;
+  quote: string;
+  rating: 1 | 2 | 3 | 4 | 5;
+  orderVerified: true;
+};
+
+// Only publish reviews after verifying a real order, customer permission,
+// and the customer's actual words. Currently no verified submissions exist.
+const verifiedReviews: VerifiedReview[] = [];
 
 const italianRegions = [
   "Abruzzo", "Basilicata", "Calabria", "Campania", "Emilia-Romagna",
@@ -56,8 +46,9 @@ export function ReviewSamples() {
   const [name, setName] = useState("");
   const [region, setRegion] = useState("");
   const [city, setCity] = useState("");
-  const [rating, setRating] = useState(5);
+  const [rating, setRating] = useState(0);
   const [message, setMessage] = useState("");
+  const [orderReference, setOrderReference] = useState("");
   const [confirmed, setConfirmed] = useState(false);
   const [consent, setConsent] = useState(false);
   const [prepared, setPrepared] = useState(false);
@@ -91,6 +82,7 @@ export function ReviewSamples() {
     "",
     "Nome: " + name.trim(),
     "Regione: " + region,
+    "Riferimento ordine privato (solo per verifica): " + orderReference.trim(),
     ...(city.trim() ? ["Città: " + city.trim()] : []),
     "Valutazione dichiarata: " + rating + "/5",
     "Acquisto dichiarato: " + (confirmed ? "Sì" : "No"),
@@ -105,7 +97,7 @@ export function ReviewSamples() {
 
   function submitReview(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!name.trim() || !region || !message.trim() || !confirmed || !consent) return;
+    if (!name.trim() || !region || message.trim().length < 20 || !orderReference.trim() || rating < 1 || !confirmed || !consent) return;
     const subject = "Recensione cliente Archivio Shop - " + name.trim();
     trackReviewEmailIntent();
     setPrepared(true);
@@ -125,36 +117,39 @@ export function ReviewSamples() {
   return (
     <section ref={sectionRef} className="shop-reviews wrap" id="opinioni" aria-labelledby="review-demo-heading">
       <div className="shop-reviews-heading">
-        <span className="eyebrow">OPINIONI SULLA COLLEZIONE</span>
-        <h2 id="review-demo-heading">Le recensioni hanno la loro voce.</h2>
-        <p className="review-notice"><strong>Anteprima dimostrativa:</strong> i tre commenti qui sotto sono esempi di stile con nomi e regioni inventati. Non sono testimonianze di acquisti reali e le cinque stelle sono illustrative.</p>
+        <span className="eyebrow">LE OPINIONI DEI CLIENTI</span>
+        <h2 id="review-demo-heading">Esperienze di acquisto verificate.</h2>
+        <p className="review-notice">Pubblichiamo solo recensioni di clienti il cui ordine è stato confermato, con il loro consenso. Accesso ricevuto, consegna digitale e consigli ad altri acquirenti sono aspetti che ogni cliente può raccontare con parole proprie.</p>
       </div>
-      <div className="review-demo-grid">
-        {reviewSamples.map((review, index) => (
-          <article className="review-demo-card" key={review.name}>
-            <div className="review-demo-top">
-              <RatingStars />
-              <span className="review-demo-label">ESEMPIO · NON VERIFICATO</span>
-            </div>
-            <h3>{review.title}</h3>
-            <p className="review-demo-quote">“{review.quote}”</p>
-            <div className="review-author">
-              <span className="review-avatar" aria-hidden="true">{review.name.charAt(0)}</span>
-              <div>
-                <strong>{review.name}</strong>
-                <span><MapPin size={13}/>{review.region}</span>
+      {verifiedReviews.length > 0 ? (
+        <div className="review-demo-grid">
+          {verifiedReviews.filter(review => review.orderVerified === true).map((review) => (
+            <article className="review-demo-card" key={review.name + review.region + review.title}>
+              <div className="review-demo-top">
+                <span className="shop-stars" role="img" aria-label={review.rating + " stelle su 5"}>
+                  {Array.from({length:5},(_,i)=><Star key={i} size={18} fill={i < review.rating ? "currentColor" : "none"}/>)}
+                </span>
+                <span className="verified-review-label"><CheckCircle2 size={15}/> ACQUISTO VERIFICATO</span>
               </div>
-            </div>
-            <small className="review-demo-foot">Esempio fittizio {index + 1} · Non è una recensione di un acquirente.</small>
-          </article>
-        ))}
-      </div>
+              <h3>{review.title}</h3>
+              <p className="review-demo-quote">“{review.quote}”</p>
+              <div className="review-author"><span className="review-avatar" aria-hidden="true">{review.name.charAt(0)}</span><div><strong>{review.name}</strong><span><MapPin size={13}/>{review.region}</span></div></div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div className="review-empty">
+          <CheckCircle2 size={27}/>
+          <div><strong>Le prime recensioni verificate arriveranno qui.</strong><p>Hai già acquistato e ricevuto l'accesso? Lascia il tuo commento qui sotto e racconta se è andato tutto bene e se consiglieresti la collezione.</p></div>
+          <a className="btn review-empty-action" href="#lascia-recensione">Lascia una recensione</a>
+        </div>
+      )}
 
       <div className="review-submit-area" id="lascia-recensione">
         <div className="review-submit-intro">
           <span className="eyebrow">HAI GIÀ ACQUISTATO?</span>
-          <h2>Raccontaci la tua esperienza.</h2>
-          <p>Hai acquistato la collezione? Lascia una recensione autentica: raccontaci come ti sei trovato e cosa ti è piaciuto, oppure cosa possiamo migliorare.</p>
+          <h2>Hai ricevuto tutto correttamente?</h2>
+          <p>Hai già acquistato? Racconta se hai ricevuto l’accesso senza problemi, com’è stata la tua esperienza e se consiglieresti la collezione ad altre persone. Scrivi solo ciò che è successo davvero.</p>
           <div className="review-submit-promise"><Mail size={21}/><span>Il tuo commento viene inviato via email per essere letto e verificato prima di un'eventuale pubblicazione.</span></div>
           <p className="review-submit-disclosure">Il sito non memorizza automaticamente le recensioni. Dopo aver compilato il modulo, si aprirà il tuo programma di posta: conferma l'invio del messaggio. Non pubblichiamo recensioni senza verifica.</p>
         </div>
@@ -171,21 +166,24 @@ export function ReviewSamples() {
             </label>
           </div>
           <label>La tua città (facoltativa)<input maxLength={60} value={city} onChange={event=>setCity(event.target.value)} placeholder="Es. Milano" /></label>
+          <label>Numero o riferimento ordine (per la verifica, non verrà pubblicato)
+            <input required maxLength={100} value={orderReference} onChange={event=>setOrderReference(event.target.value)} placeholder="Es. riferimento del pagamento Cakto"/>
+          </label>
           <fieldset className="review-rating-field">
             <legend>La tua valutazione</legend>
             <div className="review-rating-select" aria-label="Seleziona da una a cinque stelle">
               {[1,2,3,4,5].map(value=><button key={value} type="button" onClick={()=>setRating(value)} aria-label={value + (value===1?" stella":" stelle")} aria-pressed={rating===value} className={value<=rating?"active":""}><Star size={28} fill={value<=rating?"currentColor":"none"} strokeWidth={1.8}/></button>)}
-              <span>{rating} / 5</span>
+              <span>{rating ? rating + " / 5" : "Scegli le stelle"}</span>
             </div>
           </fieldset>
           <label>Il tuo commento
-            <textarea required minLength={20} maxLength={900} rows={5} value={message} onChange={event=>setMessage(event.target.value)} placeholder="Racconta la tua esperienza reale con la collezione..." />
+            <textarea required minLength={20} maxLength={900} rows={5} value={message} onChange={event=>setMessage(event.target.value)} placeholder="Hai ricevuto l’accesso correttamente? Cosa ti è piaciuto? Consiglieresti la collezione? Racconta solo la tua esperienza reale." />
           </label>
           <label className="review-check"><input required type="checkbox" checked={confirmed} onChange={event=>setConfirmed(event.target.checked)}/><span>Confermo di aver acquistato questo prodotto e che la recensione descrive la mia esperienza reale.</span></label>
           <label className="review-check"><input required type="checkbox" checked={consent} onChange={event=>setConsent(event.target.checked)}/><span>Autorizzo a essere contattato per verificare la recensione e, se approvata, a pubblicare il nome abbreviato, la regione e il commento.</span></label>
           <div className="review-form-buttons">
             <button className="btn red" type="submit"><Send size={17}/> Prepara email con la recensione</button>
-            <button className="btn" type="button" onClick={copyReview} disabled={!name.trim()||!region||message.trim().length<20||!confirmed||!consent}>Copia la recensione</button>
+            <button className="btn" type="button" onClick={copyReview} disabled={!name.trim()||!region||!orderReference.trim()||rating<1||message.trim().length<20||!confirmed||!consent}>Copia la recensione</button>
           </div>
           {prepared&&<p className="review-form-feedback" role="status">Testo pronto. Controlla il tuo programma di posta e premi “Invia”: il commento non è stato trasmesso automaticamente.</p>}
           <small>Le valutazioni inviate non vengono pubblicate in automatico. Nessun dato viene salvato su questo sito con questo modulo.</small>

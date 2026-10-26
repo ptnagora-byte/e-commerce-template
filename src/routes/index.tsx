@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight, BookOpen, Check, Download, Menu, MonitorSmartphone, ShieldCheck, ShoppingBag, X } from "lucide-react";
-import { RatingStars, ReviewSamples } from "../components/ShopReviews";
+import { ReviewSamples } from "../components/ShopReviews";
 import "../styles/storefront.css";
 
 const checkout = "https://pay.cakto.com.br/33yrtif_1239499";
@@ -75,7 +75,7 @@ function Homepage() {
           <article className="home-featured-product">
             <a href="/prodotto" className="home-product-image"><span className="home-card-chip">PRODOTTO DIGITALE</span><img src={mockup} loading="lazy" alt="Collezione digitale Playboy, oltre 500 numeri"/></a>
             <div className="home-card-body"><small>ARCHIVIO RIVISTE · COLLEZIONE COMPLETA</small><h3>Collezione Digitale Playboy – 500+ numeri PDF</h3>
-            <div className="home-card-stars"><RatingStars/><span>Stelle illustrative, senza recensioni verificate</span></div>
+            <div className="home-card-stars"><span>Recensioni dei clienti disponibili dopo la verifica degli ordini</span></div>
             <p>Oltre 500 numeri digitali, da esplorare su smartphone, tablet e computer.</p>
             <div className="home-card-buy"><strong>27 €</strong><a href="/prodotto" className="btn red">Vedi il prodotto <ArrowRight size={17}/></a></div></div>
           </article>

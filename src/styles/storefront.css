@@ -260,3 +260,13 @@
 .tracking-accept{background:#b91e33;color:#fff}
 .tracking-settings-button{position:fixed;right:12px;bottom:8px;z-index:50;appearance:none;border:1px solid #ded8d3;border-radius:5px;background:rgba(255,255,255,.93);padding:5px 9px;color:#555;font:11px Arial,sans-serif;cursor:pointer}
 @media(max-width:760px){.tracking-consent-banner{left:9px;right:9px;bottom:11px;display:block;padding:15px;max-height:60vh;overflow-y:auto}.tracking-consent-actions{margin-top:13px}.tracking-consent-actions button{flex:1}.tracking-settings-button{bottom:72px;font-size:10px}}
+
+/* Verified customer reviews: never label an unconfirmed order as verified. */
+.shop .verified-review-label{display:inline-flex;align-items:center;gap:5px;color:#23633a;font-size:9px;font-weight:900;letter-spacing:.55px;white-space:nowrap}
+.shop .review-empty{display:flex;align-items:center;gap:17px;padding:27px;border:1px solid #e7e1d8;border-radius:12px;background:#f9f7f3;margin-top:26px}
+.shop .review-empty>svg{color:#b91e33;flex-shrink:0}
+.shop .review-empty>div{flex:1}
+.shop .review-empty strong{display:block;color:#292522;font-size:16px}
+.shop .review-empty p{color:#777;line-height:1.7;font-size:12px;margin:7px 0 0}
+.shop .review-empty .review-empty-action{white-space:normal;text-align:center;font-size:12px}
+@media(max-width:760px){.shop .review-empty{align-items:flex-start;flex-direction:column;padding:21px}.shop .review-empty .review-empty-action{width:100%}}

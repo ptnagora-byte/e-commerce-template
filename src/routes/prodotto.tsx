@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, BookOpen, Check, ChevronLeft, ChevronRight, Download, LockKeyhole, Menu, MonitorSmartphone, Search, ShieldCheck, ShoppingBag, X } from "lucide-react";
 import "../styles/storefront.css";
-import { RatingStars, ReviewSamples } from "../components/ShopReviews";
+import { ReviewSamples } from "../components/ShopReviews";
 import { trackAddToCart, trackSearch } from "../lib/tracking";
 
 const checkout = "https://pay.cakto.com.br/33yrtif_1239499";
@@ -121,7 +121,7 @@ function Storefront() {
           <span className="product-collection">ARCHIVIO RIVISTE <span>·</span> 500+ NUMERI IN PDF</span>
           <h1>Collezione Digitale Playboy – oltre 500 numeri in PDF</h1>
           <div className="product-rating-line">
-            <RatingStars/><span className="rating-disclaimer">Stelle illustrative · non è una valutazione verificata</span>
+            <span className="rating-disclaimer">Recensioni pubblicate esclusivamente dopo la verifica dell’acquisto</span>
           </div>
           <p className="product-long-description">Il mondo di Playboy in una collezione digitale: interviste, cultura, costume e il design di una rivista che ha segnato intere generazioni.</p>
           <div className="product-spec-list">
