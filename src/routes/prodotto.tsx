@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight, BookOpen, Check, ChevronLeft, ChevronRight, Download, LockKeyhole, Menu, MonitorSmartphone, Search, ShieldCheck, ShoppingBag, X } from "lucide-react";
 import "../styles/storefront.css";
 import { RatingStars, ReviewSamples } from "../components/ShopReviews";
+import { trackAddToCart, trackSearch } from "../lib/tracking";
 
 const checkout = "https://pay.cakto.com.br/33yrtif_1239499";
 const mockup = "https://i.ibb.co/608YRrHf/Mockup-Digital-Playboy-em-V-rios-Dispositivos.webp";
@@ -77,7 +78,7 @@ function Storefront() {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, []);
-  function addCart() { setHasItem(true); setCart(true); }
+  function addCart() { if (!hasItem) trackAddToCart(); setHasItem(true); setCart(true); }
   function moveGallery(direction: number) { galleryRef.current?.scrollBy({ left: direction * 450, behavior: "smooth" }); }
   function goToAnchor(id: string) { setMenuOpen(false); document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }
   const selectedCovers = covers.filter((_,i) => !query.trim() || `copertina ${i+1} playboy archivio riviste collezione`.includes(query.trim().toLowerCase()));
@@ -99,7 +100,7 @@ function Storefront() {
           <button type="button" className="bag" aria-label="Apri carrello" onClick={() => setCart(true)}><ShoppingBag size={18}/><span className="bagname">Carrello</span><strong>{hasItem ? 1 : 0}</strong></button>
         </div>
       </div>
-      {searchOpen && <form className="wrap searchbox" onSubmit={(e) => {e.preventDefault();goToAnchor("anteprime");}}><Search size={18}/><input autoFocus value={query} onChange={e => setQuery(e.target.value)} placeholder="Cerca copertine, collezione..." aria-label="Cerca"/><button type="submit">Cerca</button></form>}
+      {searchOpen && <form className="wrap searchbox" onSubmit={(e) => {e.preventDefault();trackSearch(query);goToAnchor("anteprime");}}><Search size={18}/><input autoFocus value={query} onChange={e => setQuery(e.target.value)} placeholder="Cerca copertine, collezione..." aria-label="Cerca"/><button type="submit">Cerca</button></form>}
     </header>
     <main>
       <section className="wrap hero product-hero anchor" id="collezione">
