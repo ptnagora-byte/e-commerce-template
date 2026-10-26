@@ -123,6 +123,8 @@ export function initializeMarketingTracking() {
     "data-utmify-prevent-xcod-sck":"",
     "data-utmify-prevent-subids":""
   });
+  // Let components already on screen know that consented tracking is ready.
+  window.dispatchEvent(new Event("archivio:marketing-tracking-ready"));
 }
 function metaEvent(name: string,details?: Record<string,unknown>) {
   if (!hasMarketingConsent() || !active) return;
@@ -148,6 +150,32 @@ export function trackInitiateCheckout() {
 export function trackSearch(searchString: string) {
   const cleaned=searchString.trim().slice(0,120);
   if (cleaned) metaEvent("Search",{search_string:cleaned});
+}
+/**
+ * Review interactions use custom events rather than Lead or Purchase:
+ * preparing an email or copying a review does NOT confirm submission.
+ * NEVER pass customer names, email addresses, regions, review text, or typed search data here.
+ */
+function reviewInteraction(eventName: string): boolean {
+  if (typeof window === "undefined" || !active || !hasMarketingConsent()) return false;
+  window.fbq?.("trackSingleCustom", META_PIXEL_ID, eventName, {
+    section: "reviews",
+    content_type: PRODUCT.content_type,
+    content_ids: PRODUCT.content_ids,
+  });
+  return true;
+}
+export function trackReviewSectionView(): boolean {
+  return reviewInteraction("ReviewSectionView");
+}
+export function trackReviewFormStart(): boolean {
+  return reviewInteraction("ReviewFormStart");
+}
+export function trackReviewEmailIntent(): boolean {
+  return reviewInteraction("ReviewEmailIntent");
+}
+export function trackReviewCopyIntent(): boolean {
+  return reviewInteraction("ReviewCopyIntent");
 }
 // Do NOT fire Purchase in this storefront. Purchase should be recorded
 // only by Cakto's confirmed-payment integration / server webhook.

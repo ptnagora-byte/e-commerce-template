@@ -1,5 +1,11 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Mail, MapPin, Send, Star } from "lucide-react";
+import {
+  trackReviewSectionView,
+  trackReviewFormStart,
+  trackReviewEmailIntent,
+  trackReviewCopyIntent
+} from "../lib/tracking";
 
 const REVIEW_INBOX = "ptnagora@gmail.com";
 
@@ -44,6 +50,9 @@ export function RatingStars() {
 }
 
 export function ReviewSamples() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const formStarted = useRef(false);
+  const sectionTracked = useRef(false);
   const [name, setName] = useState("");
   const [region, setRegion] = useState("");
   const [city, setCity] = useState("");
@@ -52,6 +61,31 @@ export function ReviewSamples() {
   const [confirmed, setConfirmed] = useState(false);
   const [consent, setConsent] = useState(false);
   const [prepared, setPrepared] = useState(false);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || typeof IntersectionObserver === "undefined") return;
+    let visible = false;
+    const reportIfVisible = () => {
+      if (!visible || sectionTracked.current) return;
+      if (trackReviewSectionView()) sectionTracked.current = true;
+    };
+    const observer = new IntersectionObserver((entries) => {
+      visible = entries.some(entry => entry.isIntersecting);
+      reportIfVisible();
+    }, { threshold: 0.35 });
+    observer.observe(section);
+    window.addEventListener("archivio:marketing-tracking-ready", reportIfVisible);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("archivio:marketing-tracking-ready", reportIfVisible);
+    };
+  }, []);
+
+  const trackFormFirstInteraction = () => {
+    if (!formStarted.current && trackReviewFormStart()) formStarted.current = true;
+  };
+
   const reviewBody = [
     "Nuova recensione per Archivio Shop Digitale",
     "",
@@ -73,6 +107,7 @@ export function ReviewSamples() {
     event.preventDefault();
     if (!name.trim() || !region || !message.trim() || !confirmed || !consent) return;
     const subject = "Recensione cliente Archivio Shop - " + name.trim();
+    trackReviewEmailIntent();
     setPrepared(true);
     window.location.href = "mailto:" + REVIEW_INBOX + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(reviewBody);
   }
@@ -80,6 +115,7 @@ export function ReviewSamples() {
   async function copyReview() {
     try {
       await navigator.clipboard.writeText(reviewBody);
+      trackReviewCopyIntent();
       setPrepared(true);
     } catch {
       setPrepared(false);
@@ -87,7 +123,7 @@ export function ReviewSamples() {
   }
 
   return (
-    <section className="shop-reviews wrap" id="opinioni" aria-labelledby="review-demo-heading">
+    <section ref={sectionRef} className="shop-reviews wrap" id="opinioni" aria-labelledby="review-demo-heading">
       <div className="shop-reviews-heading">
         <span className="eyebrow">OPINIONI SULLA COLLEZIONE</span>
         <h2 id="review-demo-heading">Le recensioni hanno la loro voce.</h2>
@@ -122,7 +158,7 @@ export function ReviewSamples() {
           <div className="review-submit-promise"><Mail size={21}/><span>Il tuo commento viene inviato via email per essere letto e verificato prima di un'eventuale pubblicazione.</span></div>
           <p className="review-submit-disclosure">Il sito non memorizza automaticamente le recensioni. Dopo aver compilato il modulo, si aprirà il tuo programma di posta: conferma l'invio del messaggio. Non pubblichiamo recensioni senza verifica.</p>
         </div>
-        <form className="shop-review-form" onSubmit={submitReview}>
+        <form className="shop-review-form" onSubmit={submitReview} onFocusCapture={trackFormFirstInteraction}>
           <h3>Lascia la tua recensione</h3>
           <p>Solo per chi ha realmente acquistato la collezione.</p>
           <div className="review-form-grid">
